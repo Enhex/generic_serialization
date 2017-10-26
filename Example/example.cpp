@@ -19,7 +19,7 @@ SOFTWARE.
 */
 #define _CRT_SECURE_NO_WARNINGS
 
-#include "../Generic Serialization/Binary.h"
+#include <gs/Binary.h>
 #include <cassert>
 #include <iostream>
 

@@ -20,8 +20,8 @@ SOFTWARE.
 #ifndef Generic_Serialization_h
 #define Generic_Serialization_h
 
-#include "FILE.h"
-#include "fstream.h"
+#include <gs/Binary/FILE.h>
+#include <gs/Binary/fstream.h>
 
 namespace gs
 {

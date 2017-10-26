@@ -20,7 +20,7 @@ SOFTWARE.
 #ifndef gs_FILE_h
 #define gs_FILE_h
 
-#include "Core.h"
+#include <gs/Core.h>
 #include <cstdio>
 #include <utility>
 

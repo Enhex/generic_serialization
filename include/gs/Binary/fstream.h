@@ -20,7 +20,7 @@ SOFTWARE.
 #ifndef gs_fstream_h
 #define gs_fstream_h
 
-#include "Core.h"
+#include <gs/Core.h>
 #include <fstream>
 
 namespace gs
