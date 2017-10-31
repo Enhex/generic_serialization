@@ -9,9 +9,7 @@ class GenericserializationConan(ConanFile):
     url = "https://github.com/Enhex/generic_serialization"
     description = "Lightweight and extensible generic serialization library"
     # No settings/options are necessary, this is header only
-
-    def source(self):
-        self.run("git clone https://github.com/Enhex/generic_serialization.git")
+    exports_sources = "include/*"
 
     def package(self):
-        self.copy("*.h", "include", src="generic_serialization/include")
+        self.copy("*.h")
