@@ -17,8 +17,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef gs_GenericSerialization_h
-#define gs_GenericSerialization_h
+#ifndef gs_Traits_h
+#define gs_Traits_h
 
 #include <type_traits>
 #include <utility>
@@ -38,15 +38,6 @@ namespace gs
 
 	template<typename T>
 	constexpr bool is_output_v = is_output<T>::value;
-
-
-	// serialize variadic template
-	template<typename Stream, typename T, typename ...Ts>
-	void serialize(Stream& stream, T& value, Ts&... args)
-	{
-		serialize(stream, value);
-		serialize(stream, args...);
-	}
 }
 
 #endif//guard

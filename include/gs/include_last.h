@@ -17,26 +17,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef gs_FILE_h
-#define gs_FILE_h
-
-#include <gs/traits.h>
-#include <cstdio>
-#include <utility>
+#ifndef gs_include_last_h
+#define gs_include_last_h
 
 namespace gs
 {
-	// distinguish input and output
-	struct iFile : std::FILE {};
-	struct oFile : std::FILE {};
-
-	// input trait
-	template<>
-	struct is_input<iFile> : std::true_type {};
-
-	// output trait
-	template<>
-	struct is_output<oFile> : std::true_type {};
+	// serialize variadic template
+	// NOTE: must be defined after all the base serialize specializations are defined!
+	template<typename Stream, typename T, typename ...Ts>
+	void serialize(Stream& stream, T& value, Ts&... args)
+	{
+		serialize(stream, value);
+		serialize(stream, args...);
+	}
 }
 
 #endif//guard

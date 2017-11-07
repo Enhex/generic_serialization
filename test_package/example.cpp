@@ -22,6 +22,7 @@ SOFTWARE.
 #include <gs/Binary.h>
 #include <cassert>
 #include <iostream>
+#include <gs/include_last.h>
 
 using namespace std;
 using namespace gs;
