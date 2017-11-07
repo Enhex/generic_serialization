@@ -22,6 +22,7 @@ SOFTWARE.
 
 namespace gs
 {
+	// takes a parameter pack of objects and serializes them into a stream
 	template<typename Stream>
 	struct Serializer
 	{
