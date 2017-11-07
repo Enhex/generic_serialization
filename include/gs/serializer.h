@@ -17,19 +17,52 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef gs_include_last_h
-#define gs_include_last_h
+#ifndef gs_Serializer_h
+#define gs_Serializer_h
 
 namespace gs
 {
-	// serialize variadic template
-	// NOTE: must be defined after all the base serialize specializations are defined!
-	template<typename Stream, typename T, typename ...Ts>
-	void serialize(Stream& stream, T& value, Ts&... args)
+	template<typename Stream>
+	struct Serializer
 	{
-		serialize(stream, value);
-		serialize(stream, args...);
-	}
+		Serializer(Stream& stream) : stream(stream) {}
+
+		Stream& stream;
+
+		template<typename ...Ts> inline
+		auto& operator()(Ts&&... args)
+		{
+			serialize_(std::forward<Ts>(args)...);
+			return *this;
+		}
+
+		// call free function with stream argument
+		template<typename T> inline
+		void serialize_stream(T&& value)
+		{
+			serialize(*this, std::forward<T>(value));
+		}
+
+		// serialize variadic template
+		template<typename T> inline
+		void serialize_(T&& value)
+		{
+			serialize_stream(std::forward<T>(value));
+		}
+
+		template<typename T, typename ...Ts> inline
+		void serialize_(T&& value, Ts&&... args)
+		{
+			serialize_(std::forward<T>(value));
+			serialize_(std::forward<Ts>(args)...);
+		}
+	};
+
+	//NOTE: class template argument deduction not supported yet
+	template<typename Stream> inline
+	auto make_serializer(Stream&& stream) {
+		return Serializer<Stream>(std::forward<Stream>(stream));
+	};
 }
 
 #endif//guard

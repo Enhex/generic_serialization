@@ -30,14 +30,14 @@ namespace gs
 	struct is_input : std::false_type {};
 
 	template<typename T>
-	constexpr bool is_input_v = is_input<T>::value;
+	constexpr bool is_input_v = is_input<std::remove_reference_t<T>>::value;
 
 	// output trait
 	template<typename T>
 	struct is_output : std::false_type {};
 
 	template<typename T>
-	constexpr bool is_output_v = is_output<T>::value;
+	constexpr bool is_output_v = is_output<std::remove_reference_t<T>>::value;
 }
 
 #endif//guard

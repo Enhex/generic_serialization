@@ -19,13 +19,11 @@ SOFTWARE.
 */
 #define _CRT_SECURE_NO_WARNINGS
 
-#include <gs/Binary.h>
+#include <gs/binary.h>
 #include <cassert>
 #include <iostream>
-#include <gs/include_last.h>
 
 using namespace std;
-using namespace gs;
 
 void n() {
 	cout << '\n';
@@ -44,9 +42,9 @@ struct Vector3 {
 	}
 };
 
-template<typename Stream>
-void serialize(Stream& stream, Vector3& value) {
-	read_or_write_bytes(stream, value);
+template<typename S>
+void serialize(S& serializer, Vector3& value) {
+	gs::read_or_write_bytes(serializer.stream, value);
 }
 
 
@@ -69,16 +67,18 @@ struct A
 	}
 };
 
-//TODO alternatively can be a member function so we don't have to pass A and we can access members directly. Requires using SFINAE to check if the method is available.
-template<typename Stream>
-void serialize(Stream& stream, A& value) {
-	// choose which members to serialize
-	serialize(stream, value.x, value.y, value.z, value.vec3);	// members' types' already have serialization implemented
-}															/*TODO
+namespace gs
+{
+	//TODO alternatively can be a member function so we don't have to pass A and we can access members directly. Requires using SFINAE to check if the method is available.
+	template<typename Stream>
+	void serialize(Serializer<Stream>& serializer, A& value) {
+		// choose which members to serialize
+		serializer(value.x, value.y, value.z, value.vec3);	// members' types' already have serialization implemented
+	}														/*TODO
 															can provide a wrapper around the Stream type that overloads operator() so we can write concisely:
 															f(value.x, value.y);
 															*/
-
+}
 
 namespace test
 {
@@ -102,10 +102,13 @@ namespace test
 
 		// serialize to file
 		{
-			//ofstream f("test", ofstream::binary);
-			auto& f = *static_cast<oFile*>(fopen("test", "wb"));
-			serialize(f, a);
-			fclose(&f);
+			ofstream f("test", ofstream::binary);
+			//auto& f = *static_cast<gs::oFile*>(fopen("test", "wb"));
+			
+			auto serializer = gs::make_serializer(f);
+			serializer(a);
+
+			//fclose(&f);
 		}
 
 		a.x = 0;
@@ -116,10 +119,13 @@ namespace test
 
 		// read back from file
 		{
-			//ifstream f("test", ios::binary);
-			auto& f = *static_cast<iFile*>(fopen("test", "rb"));
-			serialize(f, a);
-			fclose(&f);
+			ifstream f("test", ios::binary);
+			//auto& f = *static_cast<gs::iFile*>(fopen("test", "rb"));
+
+			auto serializer = gs::make_serializer(f);
+			serializer(a);
+
+			//fclose(&f);
 		}
 
 		cout << "reading:";
