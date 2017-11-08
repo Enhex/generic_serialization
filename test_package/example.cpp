@@ -42,9 +42,9 @@ struct Vector3 {
 	}
 };
 
-template<typename S>
-void serialize(S& serializer, Vector3& value) {
-	gs::read_or_write_bytes(serializer.stream, value);
+template<typename Stream>
+void serialize(Stream& stream, Vector3& value) {
+	gs::read_or_write_bytes(stream, value);
 }
 
 
@@ -71,13 +71,13 @@ namespace gs
 {
 	//TODO alternatively can be a member function so we don't have to pass A and we can access members directly. Requires using SFINAE to check if the method is available.
 	template<typename Stream>
-	void serialize(Serializer<Stream>& serializer, A& value) {
+	void serialize(Stream& stream, A& value) {
 		// choose which members to serialize
-		serializer(value.x, value.y, value.z, value.vec3);	// members' types' already have serialization implemented
-	}														/*TODO
-															can provide a wrapper around the Stream type that overloads operator() so we can write concisely:
-															f(value.x, value.y);
-															*/
+		gs::serializer(stream, value.x, value.y, value.z, value.vec3);	// members' types' already have serialization implemented
+	}																	/*TODO
+																		can provide a wrapper around the Stream type that overloads operator() so we can write concisely:
+																		f(value.x, value.y);
+																		*/
 }
 
 namespace test
@@ -105,8 +105,7 @@ namespace test
 			ofstream f("test", ofstream::binary);
 			//auto& f = *static_cast<gs::oFile*>(fopen("test", "wb"));
 			
-			auto serializer = gs::make_serializer(f);
-			serializer(a);
+			gs::serializer(f, a);
 
 			//fclose(&f);
 		}
@@ -122,8 +121,7 @@ namespace test
 			ifstream f("test", ios::binary);
 			//auto& f = *static_cast<gs::iFile*>(fopen("test", "rb"));
 
-			auto serializer = gs::make_serializer(f);
-			serializer(a);
+			gs::serializer(f, a);
 
 			//fclose(&f);
 		}

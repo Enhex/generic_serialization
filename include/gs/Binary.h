@@ -87,8 +87,8 @@ namespace gs
 		is_binary_v<Stream> &&
 		std::is_arithmetic_v<T>
 		>
-	serialize(Serializer<Stream>& serializer, T& value) {
-		read_or_write_bytes(serializer.stream, value);
+	serialize(Stream& stream, T& value) {
+		read_or_write_bytes(stream, value);
 	}
 
 	template<typename Stream, typename T>
@@ -97,8 +97,8 @@ namespace gs
 		std::is_array_v<T> &&
 		std::is_arithmetic_v<std::decay_t<decltype(std::declval<T&>()[0])>>	// array's element type is arithmetic
 		>
-	serialize(Serializer<Stream>& serializer, T& value) {
-		read_or_write_bytes(serializer.stream, value);
+	serialize(Stream& stream, T& value) {
+		read_or_write_bytes(stream, value);
 	}
 }
 

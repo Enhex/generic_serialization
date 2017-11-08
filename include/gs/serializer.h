@@ -17,31 +17,29 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef gs_Serializer_h
-#define gs_Serializer_h
+#ifndef gs_serializer_h
+#define gs_serializer_h
 
 namespace gs
 {
 	// takes a parameter pack of objects and serializes them into a stream
 	template<typename Stream>
-	struct Serializer
+	struct serializer_t
 	{
-		constexpr Serializer(Stream& stream) noexcept : stream(stream) {}
-
 		Stream& stream;
 
 		template<typename ...Ts>
-		constexpr auto& operator()(Ts&&... args)
+		constexpr serializer_t(Stream& stream, Ts&&... args) : stream(stream)
 		{
 			serialize_(std::forward<Ts>(args)...);
-			return *this;
 		}
+
 
 		// call free function with stream argument
 		template<typename T>
-		constexpr void serialize_stream(T&& value)
+		constexpr void serialize_stream(const T& value)
 		{
-			serialize(*this, std::forward<T>(value));
+			serialize(stream, const_cast<T&>(value));	// prevent "Conversion loses qualifiers"
 		}
 
 		// serialize variadic template
@@ -60,9 +58,9 @@ namespace gs
 	};
 
 	//NOTE: class template argument deduction not supported yet
-	template<typename Stream>
-	constexpr auto make_serializer(Stream&& stream) {
-		return Serializer<Stream>(std::forward<Stream>(stream));
+	template<typename Stream, typename ...Ts>
+	constexpr auto serializer(Stream&& stream, Ts&&... args) {
+		return serializer_t<Stream>(std::forward<Stream>(stream), std::forward<Ts>(args)...);
 	};
 }
 
