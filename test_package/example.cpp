@@ -25,10 +25,6 @@ SOFTWARE.
 
 using namespace std;
 
-void n() {
-	cout << '\n';
-}
-
 
 // Example for serializing a POD type (without references/pointers since memory addresses change)
 struct Vector3 {
@@ -93,12 +89,10 @@ namespace test
 		a.z[2] = '\0';
 		a.vec3 = { 1,2,3 };
 
-		cout << "writing:";
-		n();
-		cout << "========";
-		n();
+		puts("writing:");
+		puts("========");
 		a.print();
-		n();
+		putchar('\n');
 
 		// serialize to file
 		{
@@ -126,12 +120,10 @@ namespace test
 			//fclose(&f);
 		}
 
-		cout << "reading:";
-		n();
-		cout << "========";
-		n();
+		puts("reading:");
+		puts("========");
 		a.print();
-		n();
+		putchar('\n');
 
 		assert(a.x == 5);
 		assert(a.y == 7.5);
@@ -147,9 +139,8 @@ namespace test
 
 int main()
 {
-	cout <<
-		"Serialization test\n"
-		"==================\n";
+	puts("Serialization test");
+	puts("==================");
 
 	test::serialization();
 }
