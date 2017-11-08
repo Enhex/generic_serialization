@@ -26,33 +26,33 @@ namespace gs
 	template<typename Stream>
 	struct Serializer
 	{
-		Serializer(Stream& stream) : stream(stream) {}
+		constexpr Serializer(Stream& stream) noexcept : stream(stream) {}
 
 		Stream& stream;
 
-		template<typename ...Ts> inline
-		auto& operator()(Ts&&... args)
+		template<typename ...Ts>
+		constexpr auto& operator()(Ts&&... args)
 		{
 			serialize_(std::forward<Ts>(args)...);
 			return *this;
 		}
 
 		// call free function with stream argument
-		template<typename T> inline
-		void serialize_stream(T&& value)
+		template<typename T>
+		constexpr void serialize_stream(T&& value)
 		{
 			serialize(*this, std::forward<T>(value));
 		}
 
 		// serialize variadic template
-		template<typename T> inline
-		void serialize_(T&& value)
+		template<typename T>
+		constexpr void serialize_(T&& value)
 		{
 			serialize_stream(std::forward<T>(value));
 		}
 
-		template<typename T, typename ...Ts> inline
-		void serialize_(T&& value, Ts&&... args)
+		template<typename T, typename ...Ts>
+		constexpr void serialize_(T&& value, Ts&&... args)
 		{
 			serialize_(std::forward<T>(value));
 			serialize_(std::forward<Ts>(args)...);
@@ -60,8 +60,8 @@ namespace gs
 	};
 
 	//NOTE: class template argument deduction not supported yet
-	template<typename Stream> inline
-	auto make_serializer(Stream&& stream) {
+	template<typename Stream>
+	constexpr auto make_serializer(Stream&& stream) {
 		return Serializer<Stream>(std::forward<Stream>(stream));
 	};
 }
