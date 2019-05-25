@@ -1,5 +1,7 @@
-from conans import ConanFile, CMake
 import os
+
+from conans import ConanFile, CMake, tools
+
 
 class GenericserializationTestConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
@@ -18,5 +20,6 @@ class GenericserializationTestConan(ConanFile):
         self.copy('*.so*', dst='bin', src='lib')
 
     def test(self):
-        os.chdir("bin")
-        self.run(".%sexample" % os.sep)
+        if not tools.cross_building(self.settings):
+            os.chdir("bin")
+            self.run(".%sexample" % os.sep)
