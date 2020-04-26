@@ -22,7 +22,7 @@ SOFTWARE.
 
 #include <gs/binary/FILE.h>
 #include <gs/binary/fstream.h>
-#include <gs/Serializer.h>
+#include <gs/forward/serializer.h>
 
 namespace gs
 {

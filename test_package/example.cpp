@@ -38,9 +38,12 @@ struct Vector3 {
 	}
 };
 
+namespace gs
+{
 template<typename Stream>
 void serialize(Stream& stream, Vector3& value) {
 	gs::read_or_write_bytes(stream, value);
+}
 }
 
 
@@ -75,6 +78,10 @@ namespace gs
 																		f(value.x, value.y);
 																		*/
 }
+
+
+#include <gs/serializer.h>
+
 
 namespace test
 {
