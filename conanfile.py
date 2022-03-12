@@ -8,8 +8,11 @@ class GenericserializationConan(ConanFile):
     license = "MIT"
     url = "https://github.com/Enhex/generic_serialization"
     description = "Lightweight and extensible generic serialization library"
-    # No settings/options are necessary, this is header only
+    homepage = "https://github.com/Enhex/generic_serialization"
     exports_sources = "include/*"
 
     def package(self):
         self.copy("*.h")
+
+    def package_id(self):
+        self.info.header_only()
