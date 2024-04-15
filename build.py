@@ -22,7 +22,7 @@ def create_symlink(src, dst):
         pass
 
 def build(source, build_type, symlinks = [], symlink_pairs = []):
-    build_dir = '../build/' + build_type
+    build_dir = '../build/' + build_type + '/'
 
     # create build directory
     os.makedirs(build_dir, exist_ok=True)
