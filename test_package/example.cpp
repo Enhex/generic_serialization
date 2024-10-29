@@ -105,7 +105,7 @@ namespace test
 		{
 			ofstream f("test", ofstream::binary);
 			//auto& f = *static_cast<gs::oFile*>(fopen("test", "wb"));
-			
+
 			gs::serializer(f, a);
 
 			//fclose(&f);

@@ -26,6 +26,11 @@ namespace gs
 	}
 
 	template<typename T>
+	void read_bytes(std::ifstream& f, T* data, size_t const elements_count) {
+		f.read((char*)data, sizeof(T) * elements_count);
+	}
+
+	template<typename T>
 	void read_bytes(iFile& f, T& value) {
 		fread(&value, sizeof(value), 1, &f);
 	}
@@ -38,11 +43,17 @@ namespace gs
 	}
 
 	template<typename T>
+	void write_bytes(std::ofstream& f, T const* data, size_t const elements_count){
+		f.write((char*)data, sizeof(T) * elements_count);
+	}
+
+	template<typename T>
 	void write_bytes(oFile& f, T& value) {
 		fwrite(&value, sizeof(value), 1, &f);
 	}
 
 
+	//TODO redundant? use serialize directly?
 	// Read or write. Useful for defining a single serialize() specialization for both read and write.
 	template<typename Stream, typename T>
 	typename std::enable_if_t<
@@ -52,6 +63,7 @@ namespace gs
 	read_or_write_bytes(Stream& f, T& value) {
 		read_bytes(f, value);
 	}
+
 	template<typename Stream, typename T>
 	typename std::enable_if_t<
 		is_binary_v<Stream> &&
@@ -59,6 +71,24 @@ namespace gs
 	>
 	read_or_write_bytes(Stream& f, T& value) {
 		write_bytes(f, value);
+	}
+
+	template<typename Stream, typename T>
+	typename std::enable_if_t<
+		is_binary_v<Stream> &&
+		is_output_v<Stream>
+	>
+	serialize(Stream& f, T const* data, size_t const elements_count) {
+		write_bytes(f, data, elements_count);
+	}
+
+	template<typename Stream, typename T>
+	typename std::enable_if_t<
+		is_binary_v<Stream> &&
+		is_input_v<Stream>
+	>
+	serialize(Stream& f, T* data, size_t const elements_count) {
+		read_bytes(f, data, elements_count);
 	}
 
 	//automatically provide default binary serialization implementation for arithmetic & array of arithmetic types
