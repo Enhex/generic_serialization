@@ -5,27 +5,29 @@
 
 namespace serialize
 {
-	template<typename T>
-	void write(std::vector<std::byte>& data, T const& x)
+	template<typename T, typename byte_t>
+	void write(std::vector<byte_t>& data, T const& x)
 	{
-		auto pointer = reinterpret_cast<std::byte const*>(&x);
+		static_assert(sizeof(byte_t) == 1);
+		auto const pointer = reinterpret_cast<byte_t const*>(&x);
 		for(size_t i = 0; i < sizeof(x); ++i)
-			data.push_back(*pointer++);
+			data.push_back(pointer[i]);
 	};
 
 	// advances the data pointer
-	template<typename T>
-	void read(std::byte const*& data, T& x)
+	template<typename T, typename byte_t>
+	void read(byte_t const*& data, T& x)
 	{
-		auto pointer = reinterpret_cast<std::byte*>(&x);
+		static_assert(sizeof(byte_t) == 1);
+		auto pointer = reinterpret_cast<byte_t*>(&x);
 		for (size_t i = 0; i < sizeof(x); ++i) {
 			pointer[i] = *data;
 			++data;
 		}
 	}
 
-	template<typename T>
-	T read(std::byte const*& data)
+	template<typename T, typename byte_t>
+	T read(byte_t const*& data)
 	{
 		T x;
 		read(data, x);
