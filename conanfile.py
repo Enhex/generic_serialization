@@ -1,4 +1,6 @@
-from conans import ConanFile
+import os
+from conan import ConanFile
+from conan.tools.files import copy
 
 class GenericserializationConan(ConanFile):
     name = "generic_serialization"
@@ -10,21 +12,21 @@ class GenericserializationConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = {"shared": False, "fPIC": True}
-    generators = "premake"
-    exports = "premake5.lua"
-    exports_sources = "src/*"
+    generators = "PremakeDeps"
+    exports_sources = "src/*", "premake5.lua"
 
     def build(self):
         self.run("premake5 gmake2")
         self.run('make -rj$(nproc)')
 
     def package(self):
-        self.copy("*.h", dst="include", src="src")
-        self.copy("*.lib", dst="lib", keep_path=False)
-        self.copy("*.dll", dst="bin", keep_path=False)
-        self.copy("*.dylib*", dst="lib", keep_path=False)
-        self.copy("*.so", dst="lib", keep_path=False)
-        self.copy("*.a", dst="lib", keep_path=False)
+        copy(self, "LICENSE.txt", src=self.source_folder, dst=os.path.join(self.package_folder, "licenses"))
+        copy(self, pattern="*.h", src=os.path.join(self.source_folder, "src"), dst=os.path.join(self.package_folder, "include"))
+        copy(self, pattern="*.a", src=self.build_folder, dst=os.path.join(self.package_folder, "lib"), keep_path=False)
+        copy(self, pattern="*.so", src=self.build_folder, dst=os.path.join(self.package_folder, "lib"), keep_path=False)
+        copy(self, pattern="*.lib", src=self.build_folder, dst=os.path.join(self.package_folder, "lib"), keep_path=False)
+        copy(self, pattern="*.dll", src=self.build_folder, dst=os.path.join(self.package_folder, "bin"), keep_path=False)
+        copy(self, pattern="*.dylib", src=self.build_folder, dst=os.path.join(self.package_folder, "lib"), keep_path=False)
 
     def package_info(self):
         self.cpp_info.libs = ["generic_serialization"]
