@@ -31,7 +31,8 @@ workspace("generic_serialization")
 			"../shared/src"
 		}
 
-		buildoptions{"-march=x86-64-v3"}
+		--TODO old compilers don't have the option x86-64-v3
+		--buildoptions{"-march=x86-64-v3"}
 
 		buildoptions{"-pipe"}
 		buildoptions{"-Wall -Wno-missing-braces"}
@@ -50,6 +51,6 @@ workspace("generic_serialization")
 		filter "configurations:Release"
 			defines { "NDEBUG" }
 			optimize "On"
-			flags{"LinkTimeOptimization"}
+			linktimeoptimization "On"
 			buildoptions{"-fdata-sections -ffunction-sections"} -- needed for -gc-sections
 			linkoptions{"-s -Wl,--gc-sections -Wl,--as-needed"}
